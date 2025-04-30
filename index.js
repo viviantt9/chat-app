@@ -5,13 +5,12 @@ import { GraffitiLocal } from '@graffiti-garden/implementation-local';
 
 import { HomeComponent } from './homeComponent.js';
 import { ChatComponent } from './chatComponent.js';
-import { RenameChatComponent } from './renameChatComponent.js';
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
-    { path: '/', component: HomeComponent },
-    { path: '/chat/:channel', component: ChatComponent, props: true },
+    { path: '/', component: HomeComponent},
+    { path: '/chat/:channel', component: ChatComponent, props: true},
   ]
 });
 
@@ -19,7 +18,6 @@ createApp({
     components: {
         HomeComponent,
         ChatComponent,
-        RenameChatComponent
     }
 })
   .use(router)
