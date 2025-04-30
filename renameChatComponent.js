@@ -9,6 +9,7 @@ export async function RenameChatComponent() {
       methods: {
         async submitRename() {
           if (!this.newGroupName.trim()) return;
+          
           await this.$graffiti.put({
             value: {
               name: this.newGroupName,
@@ -16,7 +17,9 @@ export async function RenameChatComponent() {
             },
             channels: ['designftw']
           }, this.$graffitiSession.value);
-          this.$router.go(-1); // Go back to chat
+          
+          this.isRenaming = false;
+          this.newGroupName = '';
         }
       },
       template: await fetch("./renameChatComponent.html").then((r) => r.text())

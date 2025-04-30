@@ -1,15 +1,40 @@
-<div>
+<div id="home">
   <button v-if="!$graffitiSession.value" @click="$graffiti.login()">Log In</button>
-    <div v-else>
-      <button @click="$graffiti.logout($graffitiSession.value)">Log Out</button>
+  <div v-else>
+    <button @click="$graffiti.logout($graffitiSession.value)">Log Out</button>
+    <button @click="showNameModal = true">Create Group Chat</button>
+
+    <div v-if="showNameModal">
+      <div class="modal-content">
+        <h3>Group Chat Name</h3>
+          <input type='text' v-model="editGroupName" placeholder="Enter group name"/>
+          <button @click="createGroupChat">Create</button>
+          <button @click="showNameModal = false">Cancel</button>
+      </div>
     </div>
 
-  <div v-if="$graffitiSession.value">
-    <button @click="showNameModal = true">Create Group Chat</button>
-    
-    <div v-if="showNameModal">
-      <input v-model="editGroupName" placeholder="Chat name">
-      <button @click="createGroupChat">Create</button>
-    </div>
+    <h3>Group Chats</h3>
+      <graffiti-discover
+        v-slot="{ objects: renameObjects }"
+        :channels="['designftw']"
+        :schema="renameSchema"
+        >
+        <span v-if="updateRenames(renameObjects)"></span>
+      </graffiti-discover>
+
+      <graffiti-discover 
+        :channels="['designftw']" 
+        :schema="groupChatSchema"
+        v-slot="{ objects: groupChats }"
+      >
+        <ul>
+          <li v-for="chat in groupChats" :key="chat.value.object.channel">
+            <button class="chat-button" @click="$router.push('/chat/' + chat.value.object.channel)">
+              {{ chat.value.object.name || 'Unnamed Chat' }}
+          </button>
+          </li>
+        </ul>
+      </graffiti-discover>
+
   </div>
 </div>

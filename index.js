@@ -12,7 +12,6 @@ const router = createRouter({
   routes: [
     { path: '/', component: HomeComponent },
     { path: '/chat/:channel', component: ChatComponent, props: true },
-    { path: '/rename-chat/:channel', component: RenameChatComponent, props: true }
   ]
 });
 

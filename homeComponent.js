@@ -2,10 +2,48 @@ export async function HomeComponent() {
   return {
     data() {
       return {
-        groupNames: {},
+        groupChats: [],
         showNameModal: false,
         editGroupName: ''
       };
+    },
+    computed: {
+      groupChatSchema() {
+        return {
+          properties: {
+            value: {
+              required: ['activity', 'object'],
+              properties: {
+                activity: { const: 'Create' },
+                object: {
+                  required: ['type', 'name', 'channel'],
+                  properties: {
+                    type: { const: 'Group Chat' },
+                    name: { type: 'string' },
+                    channel: { type: 'string' }
+                  }
+                }
+              }
+            }
+          }
+        };
+      }, 
+      renameSchema() {
+        return {
+          properties: {
+            value: {
+              required: ['name', 'describes'],
+              properties: {
+                name: { type: 'string' },
+                describes: { type: 'string' }
+              }
+            }
+          }
+        };
+    },
+    },
+    async created() {
+      await this.loadGroupChats();
     },
     methods: {
       async createGroupChat() {
@@ -21,8 +59,17 @@ export async function HomeComponent() {
           },
           channels: ['designftw']
         }, this.$graffitiSession.value);
-        this.$router.push(`/chat/${newChannel}`);
-      }
+        this.editGroupName = '';
+        this.showNameModal = false;
+        await this.loadGroupChats();
+      },
+
+      updateRenames(objects) {
+        for (const obj of objects) {
+          this.groupChats[obj.value.describes] = obj.value.name;
+        }
+        return true;
+    },
     },
     template: await fetch("./homeComponent.html").then((r) => r.text())
   };
