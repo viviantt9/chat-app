@@ -1,1 +1,111 @@
-<h1>Hello!</h1>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat App</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "vue": "https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.esm-browser.js",
+          "@graffiti-garden/implementation-remote": "https://cdn.jsdelivr.net/npm/@graffiti-garden/implementation-remote@0.6.2/dist/browser/index.js",
+          "@graffiti-garden/implementation-local": "https://cdn.jsdelivr.net/npm/@graffiti-garden/implementation-local@0.6.4/dist/browser/index.js",
+          "@graffiti-garden/wrapper-vue": "https://cdn.jsdelivr.net/npm/@graffiti-garden/wrapper-vue@0.7.2/dist/browser/plugin.mjs"
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+        <h1>Chats</h1>
+
+        <div v-if="currentView === 'home'">
+            <button v-if="!$graffitiSession.value" @click="$graffiti.login()">Log In</button>
+            <div v-else>
+                <button @click="$graffiti.logout($graffitiSession.value)">Log Out</button>
+                <button @click="showNameModal = true">Create Group Chat</button>
+
+                <graffiti-discover
+                    v-slot="{ objects: renameObjects }"
+                    :channels="['designftw']"
+                    :schema="renameSchema"
+                    >
+                    <span v-if="updateRenames(renameObjects)"></span>
+                </graffiti-discover>
+
+                <graffiti-discover
+                    v-slot="{ objects: groupChats }"
+                    :channels="['designftw']"
+                    :schema="groupChatSchema"
+                    >
+                    <ul>
+                        <li v-for="group in groupChats" :key="group.url">
+                            <button @click="selectChat(group.value.object.channel)" class="chat-button">
+                                {{ getGroupName(group.value.object.channel, group.value.object.name) }}
+                            </button>
+                        </li>
+                    </ul>
+                </graffiti-discover>
+            </div>
+        </div>
+
+        <div v-else-if="currentView === 'groupChat'">
+            <h3>{{ activeGroupName }}</h3>
+            <button @click="backToHome" class="back-button">← Back</button>
+
+            <button @click="showNameModal = true" class="rename-button">Rename Group Chat</button>
+
+            <form @submit.prevent="sendMessage($graffitiSession.value)">
+                <fieldset :disabled="sending">
+                <input type="text" v-model="myMessage" ref="messageInput" placeholder="Message" />
+                <input type="submit" :value="sending ? 'Sending…' : 'Send'" />
+                </fieldset>
+            </form>
+
+            <graffiti-discover
+                v-slot="{ objects: messages, isInitialPolling }"
+                :channels="[selectedChannel]"
+                :schema="messageSchema"
+                >
+                <ul>
+                    <li v-if="isInitialPolling">Loading...</li>
+                    <li v-for="message in sortedMessages(messages)" :key="message.url" class="message-list">
+                        <strong>
+                            {{ message.actor }}
+                            <span v-if="message.actor === $graffitiSession.value.actor">(you)</span>
+                        </strong>
+                        :
+                        <span v-if="!editingMessage || editingMessage !== message.url" class="message"> {{ message.value.content }}
+                            <button v-if="message.actor === $graffitiSession.value.actor" @click="startEdit(message)">Edit</button>
+                            <button v-if="message.actor === $graffitiSession.value.actor" @click="deleteMessage(message)">Delete</button>
+                            </span>
+                        <span v-else>
+                            <input v-model="editMessage"/>
+                            <button @click="submitEdit(message)">Save</button>
+                        </span>
+                    </li>
+                </ul>
+            </graffiti-discover>
+        </div>
+
+        <div v-if="showNameModal" class="modal">
+            <div class="modal-content">
+                <h3>Group Chat Name</h3>
+                <div v-if="currentView === 'groupChat'">
+                    <input type='text' v-model="editGroupName"/>
+                    <button @click="renameGroupChat">Rename</button>
+                    <button @click="showNameModal = false">Cancel</button>
+                </div>
+                <div v-else>
+                    <input type='text' v-model="editGroupName" placeholder="Enter group name"/>
+                    <button @click="createGroupChat">Create</button>
+                    <button @click="showNameModal = false">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="index.js" type="module"></script>
+  </body>
+</html>
