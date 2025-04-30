@@ -1,0 +1,12 @@
+<div>
+  <router-link to="/">← Back</router-link>
+  
+  <form @submit.prevent="sendMessage">
+    <input v-model="myMessage" placeholder="Type Message">
+    <button type="submit">Send</button>
+  </form>
+  
+  <router-link :to="`/rename-chat/${selectedChannel}`">
+    Rename Chat
+  </router-link>
+</div>

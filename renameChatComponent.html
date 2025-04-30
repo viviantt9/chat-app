@@ -1,0 +1,9 @@
+<div>
+  <button @click="startRename">Rename Chat</button>
+
+  <div v-if="isRenaming">
+    <input v-model="newGroupName" placeholder="Enter new chat name" />
+    <button @click="submitRename">Submit</button>
+    <button @click="cancelRename">Cancel</button>
+  </div>
+</div>

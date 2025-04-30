@@ -1,0 +1,15 @@
+<div>
+  <button v-if="!$graffitiSession.value" @click="$graffiti.login()">Log In</button>
+    <div v-else>
+      <button @click="$graffiti.logout($graffitiSession.value)">Log Out</button>
+    </div>
+
+  <div v-if="$graffitiSession.value">
+    <button @click="showNameModal = true">Create Group Chat</button>
+    
+    <div v-if="showNameModal">
+      <input v-model="editGroupName" placeholder="Chat name">
+      <button @click="createGroupChat">Create</button>
+    </div>
+  </div>
+</div>
