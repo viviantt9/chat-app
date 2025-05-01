@@ -97,3 +97,48 @@ button:hover {
 .spacer {
     margin: 1rem 0;
 }
+
+.profile {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+  
+.profile-edit label {
+    display: block;
+    margin: 10px 0;
+}
+
+.profile-icon img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+  
+.profile-edit input, .profile-edit textarea {
+    width: 100%;
+    margin-top: 5px;
+    padding: 5px;
+}
+  
+.profile-actions {
+    margin-top: 20px;
+}
+
+.notes-container {
+    margin: 20px 0;
+    padding-top: 20px;
+}
+  
+.notes-editor {
+    margin: 10px 20px 0 0;
+}
+  
+.notes-editor textarea {
+    min-height: 150px;
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #000000;
+    border-radius: 5px;
+}

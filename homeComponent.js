@@ -28,6 +28,7 @@ export async function HomeComponent() {
           }
         };
       }, 
+      
       renameSchema() {
         return {
           properties: {
@@ -42,9 +43,7 @@ export async function HomeComponent() {
         };
     },
     },
-    async created() {
-      await this.loadGroupChats();
-    },
+  
     methods: {
       async createGroupChat() {
         const newChannel = crypto.randomUUID();
@@ -61,7 +60,6 @@ export async function HomeComponent() {
         }, this.$graffitiSession.value);
         this.editGroupName = '';
         this.showNameModal = false;
-        await this.loadGroupChats();
       },
 
       updateRenames(objects) {

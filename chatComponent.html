@@ -1,7 +1,8 @@
 <div id="chat">
   <button @click="$router.push('/')">← Back</button>
 
-  <button @click="showNameModal = true" class="rename-button">Rename Group Chat</button> -->
+  <button @click="showNameModal = true" class="rename-button">Rename Group Chat</button>
+  <button @click="$router.push('/notes')">My Notes</button>
 
   <div v-if="showNameModal">
     <div class="modal-content">
@@ -19,17 +20,17 @@
     :schema="messageSchema"
     >
     <ul>
-        <li v-if="isInitialPolling">Loading...</li>
         <li v-for="message in sortedMessages(messages)" :key="message.url" class="message-list">
             <strong>
                 {{ message.actor }}
                 <span v-if="message.actor === $graffitiSession.value.actor">(you)</span>
             </strong>
             :
-            <span v-if="!editingMessage || editingMessage !== message.url" class="message"> {{ message.value.content }}
-                <button v-if="message.actor === $graffitiSession.value.actor" @click="startEdit(message)">Edit</button>
-                <button v-if="message.actor === $graffitiSession.value.actor" @click="deleteMessage(message)">Delete</button>
-                </span>
+            <span v-if="!editingMessage || editingMessage !== message.url" class="message"> 
+              {{ message.value.content }}
+              <button v-if="message.actor === $graffitiSession.value.actor" @click="startEdit(message)">Edit</button>
+              <button v-if="message.actor === $graffitiSession.value.actor" @click="deleteMessage(message)">Delete</button>
+            </span>
             <span v-else>
                 <input v-model="editMessage"/>
                 <button @click="submitEdit(message)">Save</button>
@@ -39,7 +40,7 @@
   </graffiti-discover>
   
   <form @submit.prevent="sendMessage">
-    <input v-model="myMessage" placeholder="Type a message">
+    <input v-model="myMessage" placeholder="Type here...">
     <button type="submit">Send</button>
   </form>
 </div>

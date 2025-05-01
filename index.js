@@ -5,12 +5,16 @@ import { GraffitiLocal } from '@graffiti-garden/implementation-local';
 
 import { HomeComponent } from './homeComponent.js';
 import { ChatComponent } from './chatComponent.js';
+import { ProfileComponent } from './profileComponent.js';
+import { NotesComponent } from './notesComponent.js';
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     { path: '/', component: HomeComponent},
     { path: '/chat/:channel', component: ChatComponent, props: true},
+    { path: '/profile', component: ProfileComponent },
+    { path: '/notes', component: NotesComponent }
   ]
 });
 
@@ -18,10 +22,12 @@ createApp({
     components: {
         HomeComponent,
         ChatComponent,
+        ProfileComponent,
+        NotesComponent
     }
 })
-  .use(router)
-  .use(GraffitiPlugin, {
-    graffiti: new GraffitiLocal()
-  })
-  .mount('#app');
+.use(router)
+.use(GraffitiPlugin, {
+  graffiti: new GraffitiLocal()
+})
+.mount('#app');

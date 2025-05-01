@@ -1,0 +1,53 @@
+<div class="profile">
+    <button @click="$router.push('/')">← Back</button>
+    <graffiti-discover 
+        v-slot="{ objects: profileObject }"
+        :channels="[this.$graffitiSession.value.actor]",
+        :schema="profileSchema"
+      >
+        <ul>
+            <li v-if="profileObject.pronouns">{{ profile.pronouns }}</li>
+            <li v-if="profileObject.bio">{{ profile.bio }}</li>
+        </ul>
+    </graffiti-discover>
+
+    <div v-if="!isEditing">
+        <h2>Profile</h2>
+        <graffiti-discover 
+            v-slot="{ objects: profileObject }"
+            :channels="[this.$graffitiSession.value.actor]",
+            :schema="profileSchema"
+            >
+            <ul>
+                <li v-if="profileObject.pronouns">{{ profile.pronouns }}</li>
+                <li v-if="profileObject.bio">{{ profile.bio }}</li>
+                <li v-if="getIcon(graffitiUrl)" class="profile-icon"><img :src="profile.icon"></li>
+            </ul>
+        </graffiti-discover>
+        <button @click="isEditing = true">Edit Profile</button>
+    </div>
+    
+    <div v-if="isEditing" class="profile-edit">
+        <h2>Edit Profile</h2>
+        <label>
+            Name: 
+            <input v-model="profile.name">
+        </label>
+        <label>
+            Pronouns:
+            <input v-model="profile.pronouns" placeholder="they/them">
+        </label>
+        <label>
+            Bio:
+            <textarea v-model="profile.bio"></textarea>
+        </label>
+        <label>
+            Profile Picture:
+            <input type="file" @change="fileUpload" accept="image/*">
+        </label>
+        <div class="profile-actions">
+            <button @click="saveProfile">Save</button>
+            <button @click="isEditing = false">Cancel</button>
+        </div>
+    </div>
+</div>

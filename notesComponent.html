@@ -1,0 +1,24 @@
+<div class="notes-container">
+    <button @click="$router.push('/')">← Back</button>
+    <button @click="showNotes = !showNotes">
+      {{ showNotes ? 'Hide Notes' : 'Show Notes' }}
+    </button>
+
+    <graffiti-discover 
+        :channels="[selectedChannel]" 
+        :schema="notesSchema"
+        v-slot="{ objects: notesObjects }"
+    >
+        <span v-if="updateNotes(notesObjects)"></span>
+    </graffiti-discover>
+
+    <div v-if="showNotes" class="notes-editor">
+        <textarea 
+                v-model="notes" 
+                @input="saveNotes"
+                placeholder="Type your notes here..."
+        ></textarea>
+        <button @click="submitEdit()">Save</button>
+    </div>
+    
+</div>

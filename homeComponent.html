@@ -2,12 +2,14 @@
   <button v-if="!$graffitiSession.value" @click="$graffiti.login()">Log In</button>
   <div v-else>
     <button @click="$graffiti.logout($graffitiSession.value)">Log Out</button>
+    <button @click="$router.push('/profile')">My Profile</button>
+    <button @click="$router.push('/notes')">My Notes</button>
     <button @click="showNameModal = true">Create Group Chat</button>
 
     <div v-if="showNameModal">
       <div class="modal-content">
         <h3>Group Chat Name</h3>
-          <input type='text' v-model="editGroupName" placeholder="Enter group name"/>
+          <input type='text' v-model="editGroupName" placeholder="Enter group chat name"/>
           <button @click="createGroupChat">Create</button>
           <button @click="showNameModal = false">Cancel</button>
       </div>
@@ -31,7 +33,7 @@
           <li v-for="chat in groupChats" :key="chat.value.object.channel">
             <button class="chat-button" @click="$router.push('/chat/' + chat.value.object.channel)">
               {{ chat.value.object.name || 'Unnamed Chat' }}
-          </button>
+            </button>
           </li>
         </ul>
       </graffiti-discover>

@@ -6,6 +6,8 @@ export async function ChatComponent() {
         editGroupName: '',
         messages: [],
         showNameModal: false,
+        editMessage: "",
+        editingMessage: null,
       };
     },
     computed: {
@@ -26,27 +28,8 @@ export async function ChatComponent() {
         };
       }, 
     },
-    async created() {
-      await this.loadMessages();
-    },
-    methods: {
-      async loadMessages() {
-        const results = this.$graffiti.discover({
-          channels: [this.selectedChannel],
-          schema: this.messageSchema
-        });
-        
-        this.messages = [];
-        for await (const result of results) {
-          this.messages.push({
-            content: result.value.content,
-            published: result.value.published,
-            actor: result.actor
-          });
-        }
-        this.messages.sort((a, b) => b.published - a.published);
-      },
 
+    methods: {
       async sendMessage() {
         if (!this.myMessage.trim()) return;
         await this.$graffiti.put({
@@ -57,7 +40,6 @@ export async function ChatComponent() {
           channels: [this.selectedChannel]
         }, this.$graffitiSession.value);
         this.myMessage = '';
-        await this.loadMessages();
       },
       sortedMessages(messages) {
         return messages.slice().sort((a, b) => b.value.published - a.value.published);
@@ -74,6 +56,29 @@ export async function ChatComponent() {
         }, this.$graffitiSession.value);
         this.editGroupName = '';
         this.showNameModal = false;
+      },
+
+      async deleteMessage(message) {
+        await this.$graffiti.delete(message, this.$graffitiSession.value);
+      },
+
+      startEdit(message) {
+        this.editingMessage = message.url;
+        this.editMessage = message.value.content;
+      },
+
+      async submitEdit(message) {
+        await this.$graffiti.patch({
+            value: [
+            {
+                op: 'replace',
+                path: '/content',
+                value: this.editMessage
+            }
+            ]
+        }, message, this.$graffitiSession.value);
+        this.editingMessage = null;
+        this.editMessage = '';
       },
 
     },
